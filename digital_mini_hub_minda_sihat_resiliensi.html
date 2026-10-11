@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Mini Hub: Minda Sihat & Resiliensi</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka & Lexend -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandYellow: '#FFD166',
+                        brandPink: '#FF6B6B',
+                        brandGreen: '#06D6A0',
+                        brandBlue: '#118AB2',
+                        brandPurple: '#8338EC',
+                        brandDark: '#073B4C'
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        lexend: ['Lexend', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: #F4F7FE;
+            color: #2D3748;
+        }
+
+        h1, h2, h3, h4, .font-fun {
+            font-family: 'Fredoka', cursive;
+        }
+
+        /* Perspective for 3D flip card effect */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #E2E8F0;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #06D6A0;
+            border-radius: 10px;
+        }
+
+        .floating-bubble {
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 pb-12">
+
+    <!-- Top Navigation / Banner -->
+    <header class="bg-gradient-to-r from-brandPurple via-brandBlue to-brandGreen text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white p-2 rounded-2xl text-brandPurple shadow-md text-2xl">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold tracking-wide">MINDA SIHAT & RESILIENSI</h1>
+                    <p class="text-xs text-yellow-200">Psikopendidikan Sekolah Rendah • Dibina oleh: <span class="font-bold underline decoration-yellow-300">Cikgu Nor Akmal</span></p>
+                </div>
+            </div>
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex space-x-2 text-sm font-semibold mt-2 md:mt-0">
+                <a href="#pengenalan" class="px-3 py-1.5 rounded-full hover:bg-white/20 transition">Pengenalan</a>
+                <a href="#nota" class="px-3 py-1.5 rounded-full hover:bg-white/20 transition">Nota</a>
+                <a href="#flashcard" class="px-3 py-1.5 rounded-full hover:bg-white/20 transition">Kad Imbas</a>
+                <a href="#kuiz" class="px-3 py-1.5 rounded-full hover:bg-white/20 transition">Kuiz</a>
+                <a href="#ulangKaji" class="px-3 py-1.5 rounded-full hover:bg-white/20 transition">Ulang Kaji</a>
+                <a href="#game" class="px-3 py-1.5 rounded-full hover:bg-white/20 transition">Padanan</a>
+                <a href="#minigame" class="px-3 py-1.5 rounded-full hover:bg-white/20 transition">Memory</a>
+                <a href="#wheelgame" class="px-3 py-1.5 bg-pink-500/30 text-white rounded-full hover:bg-pink-500/50 transition">Roda Perasaan</a>
+                <a href="#speedgame" class="px-3 py-1.5 bg-amber-500/30 text-white rounded-full hover:bg-amber-500/50 transition">Cepat Jawab</a>
+                <a href="#ranking" class="px-3 py-1.5 bg-yellow-400 text-brandDark rounded-full hover:bg-yellow-300 transition shadow">Carta Kedudukan</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-4 mt-6 space-y-12">
+
+        <!-- PROFIL & SKOR KESELURUHAN -->
+        <section class="bg-white rounded-3xl p-6 shadow-xl border-4 border-yellow-300 relative overflow-hidden">
+            <div class="absolute -right-6 -bottom-6 text-slate-100 opacity-50 text-9xl font-bold pointer-events-none">
+                <i class="fa-solid fa-star"></i>
+            </div>
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+                <!-- User Input Form -->
+                <div class="w-full md:w-2/3 space-y-3">
+                    <h2 class="text-2xl font-bold text-brandPurple flex items-center gap-2 font-fun">
+                        <i class="fa-solid fa-user-astronaut text-brandPink"></i> Profil Murid
+                    </h2>
+                    <p class="text-sm text-gray-600">Masukkan nama penuh dan kelas anda. Nama dan keputusan anda akan dipaparkan secara langsung dalam <b>Carta Kedudukan Murid</b>!</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nama Penuh Murid:</label>
+                            <input type="text" id="studentName" placeholder="Contoh: Amirah Binti Ali" oninput="updateProfile()"
+                                class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-brandPurple focus:outline-none font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Kelas:</label>
+                            <input type="text" id="studentClass" placeholder="Contoh: 4 Cemerlang" oninput="updateProfile()"
+                                class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-brandPurple focus:outline-none font-medium">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Score & Ranking Display -->
+                <div class="w-full md:w-1/3 bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-5 rounded-2xl shadow-lg text-center flex flex-col items-center justify-center">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-purple-200">Jumlah Skor & Ranking Anda</span>
+                    <div class="text-4xl font-extrabold my-1 text-yellow-300 font-fun" id="totalScoreDisplay">0 / 100</div>
+                    <div class="text-xs font-bold bg-white/20 px-3 py-1 rounded-full mt-1 flex items-center gap-1.5" id="scoreStatusBadge">
+                        <i class="fa-solid fa-star"></i> Ranking: Tunas
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 1. PENGENALAN -->
+        <section id="pengenalan" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-t-8 border-brandBlue">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-blue-100 text-brandBlue rounded-2xl flex items-center justify-center text-2xl font-bold">
+                    1
+                </div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-brandDark font-fun">Pengenalan: Minda Sihat & Resiliensi</h2>
+                    <p class="text-xs text-gray-500">Mari fahami asas emosi dan ketahanan diri kita!</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                <!-- Penerangan -->
+                <div class="bg-blue-50 p-5 rounded-2xl border border-blue-100">
+                    <div class="text-brandBlue text-3xl mb-2"><i class="fa-solid fa-face-smile-beam"></i></div>
+                    <h3 class="font-bold text-lg text-brandDark mb-2 font-fun">Apa itu Minda Sihat?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Minda sihat bermaksud keupayaan kita untuk berfikir secara positif, mengurus emosi dengan baik, serta menjalin hubungan mesra dengan rakan dan keluarga.
+                    </p>
+                </div>
+
+                <!-- Resiliensi -->
+                <div class="bg-purple-50 p-5 rounded-2xl border border-purple-100">
+                    <div class="text-brandPurple text-3xl mb-2"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3 class="font-bold text-lg text-brandDark mb-2 font-fun">Apa itu Resiliensi?</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Resiliensi ialah <b>Daya Tahan Diri</b> atau semangat untuk bangkit semula. Seperti bola yang melantun semula apabila jatuh, kita tidak mudah putus asa apabila menghadapi cabaran!
+                    </p>
+                </div>
+
+                <!-- Kepentingan -->
+                <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100">
+                    <div class="text-brandGreen text-3xl mb-2"><i class="fa-solid fa-heart-circle-check"></i></div>
+                    <h3 class="font-bold text-lg text-brandDark mb-2 font-fun">Mengapa Ia Penting?</h3>
+                    <ul class="text-sm text-gray-600 space-y-1.5 list-disc list-inside">
+                        <li>Kekal tenang semasa menghadapi ujian atau masalah.</li>
+                        <li>Membuat keputusan yang bijak dan berhemah.</li>
+                        <li>Lebih gembira dan berkeyakinan tinggi.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Objektif Pembelajaran -->
+            <div class="mt-6 bg-amber-50 rounded-2xl p-4 border border-amber-200 flex items-start gap-3">
+                <i class="fa-solid fa-bullseye text-amber-500 text-2xl mt-1"></i>
+                <div>
+                    <h4 class="font-bold text-amber-900 text-sm">Objektif Pembelajaran Hari Ini:</h4>
+                    <p class="text-xs text-amber-800 mt-0.5">
+                        1. Mengenal pasti emosi asas dan cara mengurusnya secara sihat.<br>
+                        2. Memahami 3 kunci utama untuk menjadi murid yang mempunyai daya tahan diri (resiliensi).
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. NOTA RINGKAS & INFOGRAFIK -->
+        <section id="nota" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-t-8 border-brandGreen">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-emerald-100 text-brandGreen rounded-2xl flex items-center justify-center text-2xl font-bold">
+                    2
+                </div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-brandDark font-fun">Nota Ringkas & Infografik</h2>
+                    <p class="text-xs text-gray-500">Isi penting & kata kunci mudah ingat!</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Infografik 1: Formula Resiliensi 3B -->
+                <div class="bg-gradient-to-br from-amber-400 to-orange-500 rounded-3xl p-6 text-white shadow-md relative overflow-hidden">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2 font-fun">
+                        <i class="fa-solid fa-lightbulb"></i> Formula Resiliensi "3B"
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="bg-white/20 backdrop-blur-md p-3 rounded-xl flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-white text-orange-600 font-bold flex items-center justify-center text-sm shadow">1</span>
+                            <div>
+                                <h4 class="font-bold text-sm">BERTENANG</h4>
+                                <p class="text-xs text-orange-100">Tarik nafas dalam-dalam apabila rasa marah atau sedih.</p>
+                            </div>
+                        </div>
+                        <div class="bg-white/20 backdrop-blur-md p-3 rounded-xl flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-white text-orange-600 font-bold flex items-center justify-center text-sm shadow">2</span>
+                            <div>
+                                <h4 class="font-bold text-sm">BERFIKIR POSITIF</h4>
+                                <p class="text-xs text-orange-100">Katakan pada diri: "Saya boleh cuba lagi!"</p>
+                            </div>
+                        </div>
+                        <div class="bg-white/20 backdrop-blur-md p-3 rounded-xl flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-white text-orange-600 font-bold flex items-center justify-center text-sm shadow">3</span>
+                            <div>
+                                <h4 class="font-bold text-sm">BANGKIT UTUH</h4>
+                                <p class="text-xs text-orange-100">Minta bantuan orang dewasa dan terus berusaha.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Infografik 2: Cara Urus Tekanan -->
+                <div class="bg-gradient-to-br from-teal-400 to-cyan-600 rounded-3xl p-6 text-white shadow-md">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2 font-fun">
+                        <i class="fa-solid fa-spa"></i> Teknik Mengurus Stres / Tekanan
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3 text-center">
+                        <div class="bg-white/15 p-3 rounded-2xl border border-white/20">
+                            <i class="fa-solid fa-wind text-2xl text-cyan-200 mb-1"></i>
+                            <h4 class="text-xs font-bold">Teknik 4-7-8</h4>
+                            <p class="text-[10px] text-cyan-100 mt-1">Tarik nafas 4 saat, tahan 7 saat, hembus 8 saat.</p>
+                        </div>
+                        <div class="bg-white/15 p-3 rounded-2xl border border-white/20">
+                            <i class="fa-solid fa-comments text-2xl text-cyan-200 mb-1"></i>
+                            <h4 class="text-xs font-bold">Luahkan Perasaan</h4>
+                            <p class="text-[10px] text-cyan-100 mt-1">Bercakap dengan ibu bapa atau Guru Bimbingan dan Kaunseling.</p>
+                        </div>
+                        <div class="bg-white/15 p-3 rounded-2xl border border-white/20">
+                            <i class="fa-solid fa-running text-2xl text-cyan-200 mb-1"></i>
+                            <h4 class="text-xs font-bold">Riadah & Sukan</h4>
+                            <p class="text-[10px] text-cyan-100 mt-1">Bermain di padang untuk merembeskan hormon gembira.</p>
+                        </div>
+                        <div class="bg-white/15 p-3 rounded-2xl border border-white/20">
+                            <i class="fa-solid fa-bed text-2xl text-cyan-200 mb-1"></i>
+                            <h4 class="text-xs font-bold">Tidur Secukupnya</h4>
+                            <p class="text-[10px] text-cyan-100 mt-1">Tidur 8-9 jam sehari supaya otak mendapat rehat yang mencukupi.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kata Kunci Ringkas -->
+            <div class="mt-6">
+                <h4 class="font-bold text-gray-700 mb-3 text-sm">Glosari Kata Kunci Utama:</h4>
+                <div class="flex flex-wrap gap-2">
+                    <span class="bg-pink-100 text-pink-700 text-xs font-bold px-3 py-1.5 rounded-xl border border-pink-200"><i class="fa-solid fa-key mr-1"></i> Emosi: Perasaan dalam hati</span>
+                    <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1.5 rounded-xl border border-blue-200"><i class="fa-solid fa-key mr-1"></i> Empati: Memahami perasaan orang lain</span>
+                    <span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1.5 rounded-xl border border-green-200"><i class="fa-solid fa-key mr-1"></i> Optimis: Sentiasa berfikiran baik</span>
+                    <span class="bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1.5 rounded-xl border border-purple-200"><i class="fa-solid fa-key mr-1"></i> Stres: Rasa tertekan atau cemas</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. FLASHCARD INTERAKTIF -->
+        <section id="flashcard" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-t-8 border-brandPink">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-2">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-pink-100 text-brandPink rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        3
+                    </div>
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-brandDark font-fun">Kad Imbas Interaktif</h2>
+                        <p class="text-xs text-gray-500">Klik pada kad untuk melihat jawapan di sebelah belakang!</p>
+                    </div>
+                </div>
+                <span class="text-xs bg-pink-50 text-pink-600 px-3 py-1 rounded-full border border-pink-200 font-semibold">
+                    <i class="fa-solid fa-hand-pointer mr-1"></i> Klik Kad
+                </span>
+            </div>
+
+            <!-- Flashcards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="flashcardGrid">
+                <!-- Javascript dynamic flip cards -->
+            </div>
+        </section>
+
+        <!-- 4. KUIZ 10 SOALAN -->
+        <section id="kuiz" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-t-8 border-brandPurple">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-2">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-purple-100 text-brandPurple rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        4
+                    </div>
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-brandDark font-fun">Kuiz Minda Sihat & Cabaran KBAT (10 Soalan)</h2>
+                        <p class="text-xs text-gray-500">Uji kefahaman & analisis situasi anda untuk mengumpul sehingga 50 Markah!</p>
+                    </div>
+                </div>
+                <div id="quizProgress" class="text-xs font-bold text-purple-700 bg-purple-100 px-3 py-1.5 rounded-full">
+                    Soalan 1 daripada 10
+                </div>
+            </div>
+
+            <!-- Quiz Box -->
+            <div class="bg-slate-50 p-6 rounded-2xl border-2 border-slate-200" id="quizContainer">
+                <div id="quizQuestionBox">
+                    <!-- Dynamic Question Render -->
+                </div>
+                
+                <div class="mt-6 flex justify-between items-center pt-4 border-t border-slate-200">
+                    <button id="prevBtn" onclick="navigateQuiz(-1)" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl font-bold text-sm hover:bg-slate-300 transition disabled:opacity-40">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Sebelum
+                    </button>
+                    <button id="nextBtn" onclick="navigateQuiz(1)" class="px-5 py-2 bg-brandPurple text-white rounded-xl font-bold text-sm hover:bg-purple-700 transition shadow">
+                        Seterusnya <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Quiz Feedback Summary -->
+            <div id="quizFeedbackBox" class="hidden mt-4 p-4 rounded-2xl text-center"></div>
+        </section>
+
+        <!-- 5. ULANG KAJI & CHECKLIST -->
+        <section id="ulangKaji" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-t-8 border-yellow-400">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-yellow-100 text-yellow-600 rounded-2xl flex items-center justify-center text-2xl font-bold">
+                    5
+                </div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-brandDark font-fun">Ulang Kaji & Senarai Semak Kendiri</h2>
+                    <p class="text-xs text-gray-500">Tanda amalan minda sihat yang telah anda lakukan hari ini!</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Rumusan Fast Facts -->
+                <div class="bg-amber-50 p-5 rounded-2xl border border-amber-200">
+                    <h3 class="font-bold text-amber-900 mb-3 flex items-center gap-2 font-fun">
+                        <i class="fa-solid fa-bolt text-amber-500"></i> Soalan Pantas (Uji Ingatan)
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <details class="bg-white p-3 rounded-xl border border-amber-100 cursor-pointer">
+                            <summary class="font-semibold text-amber-800">S: Apa yang perlu dibuat jika rakan berasa sedih?</summary>
+                            <p class="text-xs text-gray-600 mt-2 pl-2 border-l-2 border-amber-400">
+                                J: Berikan senyuman, dengar luahan mereka, dan elakkan mengejek.
+                            </p>
+                        </details>
+                        <details class="bg-white p-3 rounded-xl border border-amber-100 cursor-pointer">
+                            <summary class="font-semibold text-amber-800">S: Bolehkah kita berasa marah?</summary>
+                            <p class="text-xs text-gray-600 mt-2 pl-2 border-l-2 border-amber-400">
+                                J: Boleh, marah ialah emosi semula jadi. Namun, cara mengawal kemarahan yang penting (jangan cederakan orang lain atau merosakkan harta benda).
+                            </p>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- Interactive Checklist -->
+                <div class="bg-indigo-50 p-5 rounded-2xl border border-indigo-100">
+                    <h3 class="font-bold text-indigo-900 mb-3 flex items-center gap-2 font-fun">
+                        <i class="fa-solid fa-list-check text-indigo-600"></i> Senarai Semak Amalan Minda Sihat
+                    </h3>
+                    <div class="space-y-2 text-xs font-medium text-slate-700" id="checklistContainer">
+                        <label class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-indigo-100 cursor-pointer hover:bg-indigo-50/50">
+                            <input type="checkbox" onchange="checkChecklist()" class="w-4 h-4 text-indigo-600 rounded">
+                            <span>Saya mengucapkan terima kasih kepada rakan atau guru.</span>
+                        </label>
+                        <label class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-indigo-100 cursor-pointer hover:bg-indigo-50/50">
+                            <input type="checkbox" onchange="checkChecklist()" class="w-4 h-4 text-indigo-600 rounded">
+                            <span>Saya melakukan pernafasan dalam apabila berasa bimbang.</span>
+                        </label>
+                        <label class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-indigo-100 cursor-pointer hover:bg-indigo-50/50">
+                            <input type="checkbox" onchange="checkChecklist()" class="w-4 h-4 text-indigo-600 rounded">
+                            <span>Saya tidak berputus asa walaupun jawapan soalan saya salah.</span>
+                        </label>
+                        <label class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-indigo-100 cursor-pointer hover:bg-indigo-50/50">
+                            <input type="checkbox" onchange="checkChecklist()" class="w-4 h-4 text-indigo-600 rounded">
+                            <span>Saya tidur awal malam tadi dan mendapat rehat secukupnya.</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. GAME EDUKATIF (PADANKAN JAWAPAN) -->
+        <section id="game" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-t-8 border-brandBlue">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-2">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-blue-100 text-brandBlue rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        6
+                    </div>
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-brandDark font-fun">Game Edukatif: Padankan Situasi</h2>
+                        <p class="text-xs text-gray-500">Klik Situasi dahulu, kemudian klik Tindakan Resiliensi yang betul! (25 Markah)</p>
+                    </div>
+                </div>
+                <span class="text-xs font-bold text-brandBlue bg-blue-50 px-3 py-1 rounded-full border border-blue-200" id="matchingScoreDisplay">
+                    Skor Permainan 1: 0 / 25
+                </span>
+            </div>
+
+            <!-- Matching Game Canvas/Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border-2 border-slate-200">
+                <!-- Column 1: Situasi -->
+                <div>
+                    <h3 class="font-bold text-slate-700 mb-3 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question text-brandBlue"></i> 1. Pilih Situasi:
+                    </h3>
+                    <div class="space-y-3" id="situationList">
+                        <!-- Dynamic Buttons -->
+                    </div>
+                </div>
+
+                <!-- Column 2: Tindakan -->
+                <div>
+                    <h3 class="font-bold text-slate-700 mb-3 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check text-brandGreen"></i> 2. Pilih Tindakan Positif:
+                    </h3>
+                    <div class="space-y-3" id="actionList">
+                        <!-- Dynamic Buttons -->
+                    </div>
+                </div>
+            </div>
+            <div id="matchingMsg" class="mt-3 text-center text-sm font-bold text-emerald-600 h-6"></div>
+        </section>
+
+        <!-- 7. MINI GAME (MEMORY FLIP CARD) -->
+        <section id="minigame" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-t-8 border-brandPink">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-2">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-pink-100 text-brandPink rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        7
+                    </div>
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-brandDark font-fun">Permainan Mini 2: Cari Pasangan Emosi</h2>
+                        <p class="text-xs text-gray-500">Buka kad dan cari ikon emosi yang sama! (25 Markah)</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="initMemoryGame()" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-3 py-1.5 rounded-xl transition">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> Main Semula
+                    </button>
+                    <span class="text-xs font-bold text-pink-600 bg-pink-50 px-3 py-1 rounded-full border border-pink-200" id="memoryScoreDisplay">
+                        Skor Permainan 2: 0 / 25
+                    </span>
+                </div>
+            </div>
+
+            <!-- Memory Game Grid -->
+            <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 max-w-xl mx-auto" id="memoryGrid">
+                <!-- Dynamic Cards -->
+            </div>
+        </section>
+
+        <!-- 8. GAME BAHARU: RODA PERASAAN & STRATEGI EMOSI -->
+        <section id="wheelgame" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-t-8 border-brandPurple">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-2">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-purple-100 text-brandPurple rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        8
+                    </div>
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-brandDark font-fun">Permainan Mini 3: Roda Perasaan & Strategi</h2>
+                        <p class="text-xs text-gray-500">Putar roda untuk dapatkan emosi, kemudian pilih tindak balas yang paling sihat! (25 Markah)</p>
+                    </div>
+                </div>
+                <span class="text-xs font-bold text-brandPurple bg-purple-50 px-3 py-1 rounded-full border border-purple-200" id="wheelScoreDisplay">
+                    Skor Permainan 3: 0 / 25
+                </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center bg-slate-50 p-6 rounded-2xl border-2 border-slate-200">
+                <!-- Interactive Canvas Wheel -->
+                <div class="flex flex-col items-center justify-center">
+                    <div class="relative w-64 h-64 flex items-center justify-center">
+                        <div class="absolute -top-3 z-20 text-rose-600 text-3xl">
+                            <i class="fa-solid fa-location-pin"></i>
+                        </div>
+                        <canvas id="wheelCanvas" width="250" height="250" class="rounded-full shadow-lg border-4 border-white"></canvas>
+                    </div>
+                    <button id="spinWheelBtn" onclick="spinEmotionsWheel()" class="mt-4 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-extrabold rounded-2xl shadow-md transition transform active:scale-95 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-rotate text-yellow-300"></i> Putar Roda Perasaan
+                    </button>
+                </div>
+
+                <!-- Challenge Scenario Box -->
+                <div id="wheelChallengeBox" class="bg-white p-5 rounded-2xl border-2 border-purple-100 min-h-[220px] flex flex-col justify-between">
+                    <div class="text-center my-auto">
+                        <i class="fa-solid fa-circle-play text-4xl text-purple-300 mb-2"></i>
+                        <h3 class="font-bold text-slate-700 text-sm">Klik "Putar Roda Perasaan" di sebelah untuk memulakan cabaran!</h3>
+                        <p class="text-xs text-gray-400 mt-1">Selesaikan 3 pusingan untuk mengumpul 25 markah penuh.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. GAME BAHARU: CABARAN CEPAT JAWAB "YA" ATAU "TIDAK" -->
+        <section id="speedgame" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border-t-8 border-amber-400">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-2">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        9
+                    </div>
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-brandDark font-fun">Permainan Mini 4: Katakan "YA" atau "TIDAK"</h2>
+                        <p class="text-xs text-gray-500">Refleksi pantas: Adakah penyataan berikut merupakan amalan Minda Sihat? (25 Markah)</p>
+                    </div>
+                </div>
+                <span class="text-xs font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200" id="speedScoreDisplay">
+                    Skor Permainan 4: 0 / 25
+                </span>
+            </div>
+
+            <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-2xl border-2 border-amber-200" id="speedGameContainer">
+                <!-- Dynamic Content Rendered by JS -->
+            </div>
+        </section>
+
+        <!-- 10. CARTA KEDUDUKAN & SENARAI REKOD MURID -->
+        <section id="ranking" class="bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+            <div class="max-w-4xl mx-auto space-y-6">
+                
+                <!-- Section Header -->
+                <div class="text-center space-y-2">
+                    <div class="w-16 h-16 bg-yellow-400 text-slate-900 rounded-3xl mx-auto flex items-center justify-center text-3xl shadow-lg font-bold floating-bubble">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-bold tracking-wide font-fun">CARTA KEDUDUKAN & SENARAI REKOD MURID</h2>
+                    <p class="text-xs sm:text-sm text-purple-200">
+                        Nama dan jumlah markah murid yang menyertai aktiviti terpampang di sini secara automatik mengikut susunan ranking tertinggi!
+                    </p>
+                </div>
+
+                <!-- Ranking Tiers Legend -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-left my-4">
+                    <div class="bg-amber-500/20 border border-amber-400/40 p-2.5 rounded-xl">
+                        <div class="text-amber-300 font-bold text-xs flex items-center gap-1.5">
+                            <i class="fa-solid fa-medal text-amber-300"></i> RANKING EMAS
+                        </div>
+                        <p class="text-[10px] text-gray-300 mt-0.5">Skor: 90 - 100 Markah</p>
+                    </div>
+                    <div class="bg-slate-300/20 border border-slate-300/40 p-2.5 rounded-xl">
+                        <div class="text-slate-200 font-bold text-xs flex items-center gap-1.5">
+                            <i class="fa-solid fa-medal text-slate-300"></i> RANKING PERAK
+                        </div>
+                        <p class="text-[10px] text-gray-300 mt-0.5">Skor: 70 - 89 Markah</p>
+                    </div>
+                    <div class="bg-amber-700/20 border border-amber-600/40 p-2.5 rounded-xl">
+                        <div class="text-amber-400 font-bold text-xs flex items-center gap-1.5">
+                            <i class="fa-solid fa-medal text-amber-600"></i> RANKING GANGSA
+                        </div>
+                        <p class="text-[10px] text-gray-300 mt-0.5">Skor: 50 - 69 Markah</p>
+                    </div>
+                    <div class="bg-blue-500/20 border border-blue-400/40 p-2.5 rounded-xl">
+                        <div class="text-blue-300 font-bold text-xs flex items-center gap-1.5">
+                            <i class="fa-solid fa-star text-blue-300"></i> RANKING TUNAS
+                        </div>
+                        <p class="text-[10px] text-gray-300 mt-0.5">Skor: 0 - 49 Markah</p>
+                    </div>
+                </div>
+
+                <!-- Action Button: Save / Update Record -->
+                <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                    <div>
+                        <h4 class="font-bold text-yellow-300 text-sm">Simpan / Kemas Kini Rekod Markah Anda</h4>
+                        <p class="text-xs text-purple-200">Klik butang di sebelah untuk memasukkan atau mengemas kini markah terkini anda ke dalam senarai!</p>
+                    </div>
+                    <button onclick="saveCurrentRecord()" class="px-6 py-3 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-slate-900 font-extrabold rounded-xl shadow-lg transition transform hover:scale-105 flex items-center gap-2 whitespace-nowrap text-sm">
+                        <i class="fa-solid fa-plus-circle text-base"></i> Simpan Rekod Saya
+                    </button>
+                </div>
+
+                <!-- Leaderboard Table Container -->
+                <div class="bg-slate-800/90 rounded-2xl p-4 border border-purple-500/30 shadow-inner">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mb-4">
+                        <h3 class="font-bold text-lg text-white font-fun flex items-center gap-2">
+                            <i class="fa-solid fa-list-ol text-amber-400"></i> Senarai Murid & Ranking Terkumpul
+                        </h3>
+                        <!-- Search / Clear controls -->
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <input type="text" id="searchLeaderboard" oninput="renderLeaderboard()" placeholder="Cari nama murid..." class="px-3 py-1.5 rounded-xl bg-slate-900 border border-purple-400/40 text-xs text-white focus:outline-none w-full sm:w-48">
+                            <button onclick="clearLeaderboard()" title="Padam semua rekod" class="px-3 py-1.5 bg-rose-600/80 hover:bg-rose-600 text-white font-bold rounded-xl text-xs transition">
+                                <i class="fa-solid fa-trash-can mr-1"></i> Padam
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-slate-200">
+                            <thead class="bg-purple-950/80 text-purple-200 font-bold uppercase text-[11px] border-b border-purple-800">
+                                <tr>
+                                    <th class="p-3 text-center">Kedudukan</th>
+                                    <th class="p-3">Nama Murid</th>
+                                    <th class="p-3">Kelas</th>
+                                    <th class="p-3 text-center">Pecahan Markah</th>
+                                    <th class="p-3 text-center">Jumlah Skor</th>
+                                    <th class="p-3 text-center">Anugerah Ranking</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboardBody" class="divide-y divide-slate-700/50">
+                                <!-- Dynamic leaderboard rows rendered via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Credit -->
+    <footer class="mt-12 text-center text-xs text-gray-500 py-4 border-t border-slate-200">
+        <p>Aplikasi Digital Mini Hub: Minda Sihat & Resiliensi</p>
+        <p class="font-semibold text-purple-700 mt-1">
+            <i class="fa-solid fa-code text-brandPink mr-1"></i> Direka & Dibina oleh: <b>Cikgu Nor Akmal</b>
+        </p>
+    </footer>
+
+    <script>
+        /* -------------------------------------------------------------
+           1. GLOBAL STATE & USER DATA
+        ------------------------------------------------------------- */
+<!-- ... existing code -->
